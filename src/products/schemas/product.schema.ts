@@ -1,48 +1,49 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {Document} from 'mongoose';
-import * as mongoose from "mongoose";
+import {prop} from "@typegoose/typegoose";
+import {Base, TimeStamps} from "@typegoose/typegoose/lib/defaultClasses";
 
-export type ProductDocument = Product & Document;
+class ProductsCharasteristics{
+    @prop()
+    name: string;
 
-@Schema()
-export class Product {
-    @Prop()
-    title: string;
-
-    @Prop()
-    price: number;
-
-    @Prop()
-    image: string;
-
-    @Prop()
-    oldPrice: number;
-
-    @Prop()
-    credit: number;
-
-    @Prop()
-    calculatedRating: number;
-
-    @Prop()
-    description: string;
-
-    @Prop()
-    advantages: string;
-
-    @Prop()
-    disAdvantages: string;
-
-    @Prop({type: [String]})
-    categories: string[];
-
-    @Prop()
-    tags: string;
-
-    @Prop({type: mongoose.Schema.Types.Mixed})
-    characteristics: {
-        [key: string]: string;
-    };
+    @prop()
+    value: string;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+export interface Product extends Base { }
+export class Product extends TimeStamps{
+    @prop()
+    title: string;
+
+    @prop()
+    price: number;
+
+    @prop()
+    image: string;
+
+    @prop()
+    oldPrice: number;
+
+    @prop()
+    credit: number;
+
+    @prop()
+    calculatedRating: number;
+
+    @prop()
+    description: string;
+
+    @prop()
+    advantages: string;
+
+    @prop()
+    disAdvantages: string;
+
+    @prop({type: () => [String]})
+    categories: string[];
+
+    @prop({type: () => [String]})
+    tags: string[];
+
+    @prop({type: () => [ProductsCharasteristics], _id: false})
+    characteristics: ProductsCharasteristics[];
+}

@@ -1,46 +1,55 @@
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {Document} from 'mongoose';
-import * as mongoose from "mongoose";
 import {TopLevelCategory} from "../DTO/create-top-page.dto";
+import {Base, TimeStamps} from "@typegoose/typegoose/lib/defaultClasses";
+import {prop} from "@typegoose/typegoose";
 
-export type TopPageDocument = TopPage & Document;
+export class HHData{
+    @prop()
+    count: number;
 
-@Schema()
-export class TopPage {
-    @Prop()
-    firstCategory: TopLevelCategory;
+    @prop()
+    juniorSalary: number;
 
-    @Prop()
-    secondCategory: string;
+    @prop()
+    middleSalary: number;
 
-    @Prop()
-    title: string;
-
-    @Prop()
-    category: string;
-
-    @Prop({type: mongoose.Schema.Types.Mixed})
-    hh?: {
-        count: number;
-        juniorSalary: number;
-        middleSalary: number;
-        seniorSalary: number;
-    };
-
-    @Prop()
-    adventages: {
-        title: string;
-        description: string
-    }[];
-
-    @Prop()
-    seoText: string;
-
-    @Prop()
-    tags: string[];
-
-    @Prop()
-    tagsTitle: string;
+    @prop()
+    seniorSalary: number;
 }
 
-export const TopPageSchema = SchemaFactory.createForClass(TopPage);
+export class TopPageAdvantage{
+    @prop()
+    title: string;
+
+    @prop()
+    description: string
+}
+
+export interface TopPage extends Base {}
+export class TopPage extends TimeStamps{
+    @prop({enum: TopLevelCategory})
+    firstCategory: TopLevelCategory;
+
+    @prop()
+    secondCategory: string;
+
+    @prop()
+    title: string;
+
+    @prop()
+    category: string;
+
+    @prop({type: () => HHData})
+    hh?: HHData;
+
+    @prop({type: () => [TopPageAdvantage]})
+    adventages: TopPageAdvantage[];
+
+    @prop()
+    seoText: string;
+
+    @prop({type: () => [String]})
+    tags: string[];
+
+    @prop()
+    tagsTitle: string;
+}

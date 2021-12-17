@@ -1,25 +1,30 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import {Review, ReviewDocument} from "./schemas/review.schema";
+import {Injectable} from '@nestjs/common';
+import {Review} from "./schemas/review.schema";
 import {CreateReviewDto} from "./DTO/create-review.dto";
+import {ModelType, DocumentType} from "@typegoose/typegoose/lib/types";
+import {InjectModel} from "nestjs-typegoose";
 
 @Injectable()
 export class ReviewService {
-  constructor(
-    @InjectModel(Review.name) private reviewModel: Model<ReviewDocument>,
-  ) {}
-  private review = [];
+    constructor(
+        @InjectModel(Review) private reviewModel: ModelType<Review>) {
+    }
 
-  async getByProduct(productId: string): Promise<Review> {
-    return this.reviewModel.findById(productId).exec();
-  }
+    private review = [];
 
-  async create(reviewDto: CreateReviewDto): Promise<Review> {
-    return this.reviewModel.create(reviewDto);
-  }
+    async getByProduct(productId: string): Promise<DocumentType<Review>[]> {
+        return this.reviewModel.find({ productId: productId }).exec();
+    }
 
-  async delete(id: string): Promise<Review> {
-    return this.reviewModel.findByIdAndRemove(id);
-  }
+    async create(reviewDto: CreateReviewDto): Promise<DocumentType<Review>> {
+        return this.reviewModel.create(reviewDto);
+    }
+
+    async delete(id: string): Promise<DocumentType<Review> | null> {
+        return this.reviewModel.findByIdAndDelete(id).exec();
+    }
+
+    async deleteByProductId(productId: string){
+        return this.reviewModel.deleteMany({productId: productId}).exec();
+    }
 }
