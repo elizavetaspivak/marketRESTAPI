@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {TopPage, TopPageDocument} from "./schemas/top-page.schema";
-import {CreateTopPageDto, TopLevelCategory} from "./DTO/create-top-page.dto";
+import {CreateTopPageDto} from "./DTO/create-top-page.dto";
 import {UpdateTopPageDto} from "./DTO/update-top-page.dto";
 import {FindTopPageDto} from "./DTO/find-top-page.dto";
 
