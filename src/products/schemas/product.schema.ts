@@ -21,13 +21,10 @@ export class Product extends TimeStamps{
     image: string;
 
     @prop()
-    oldPrice: number;
+    oldPrice?: number;
 
     @prop()
     credit: number;
-
-    @prop()
-    calculatedRating: number;
 
     @prop()
     description: string;

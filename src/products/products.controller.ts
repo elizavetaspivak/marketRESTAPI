@@ -5,15 +5,17 @@ import {
     Get,
     Header,
     HttpCode,
-    HttpStatus,
-    Param,
+    HttpStatus, NotFoundException,
+    Param, Patch,
     Post,
-    Put,
+    Put, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import {CreateProductDto} from './DTO/create-product.dto';
 import {UpdateProductDto} from './DTO/update-product.dto';
 import {ProductsService} from './products.service';
 import {Product} from './schemas/product.schema';
+import {NOT_FOUND_PRODUCT_ERROR} from "./products.constants";
+import {FindProductDto} from "./DTO/find-product.dto";
 
 @Controller('products')
 export class ProductsController {
@@ -28,7 +30,11 @@ export class ProductsController {
 
     @Get(':id')
     getOne(@Param('id') id: string): Promise<Product> {
-        return this.productService.getById(id);
+        const product = this.productService.getById(id);
+        if (!product) {
+            throw new NotFoundException(NOT_FOUND_PRODUCT_ERROR);
+        }
+        return product;
     }
 
     @Post()
@@ -38,16 +44,30 @@ export class ProductsController {
         return this.productService.create(createProductDto);
     }
 
-    @Delete(':id')
-    remove(@Param('id') id: string): Promise<Product> {
-        return this.productService.remove(id);
+    @UsePipes(new ValidationPipe())
+    @Post('find')
+    @Header('Cache-Control', 'none')
+    find(@Body() findProductDto: FindProductDto): Promise<Product> {
+        return this.productService.findWithReview(findProductDto);
     }
 
-    @Put(':id')
+    @Delete(':id')
+    remove(@Param('id') id: string) {
+        const deletedProduct = this.productService.remove(id);
+        if (!deletedProduct) {
+            throw new NotFoundException(NOT_FOUND_PRODUCT_ERROR);
+        }
+    }
+
+    @Patch(':id')
     update(
         @Body() updateProductDTO: UpdateProductDto,
         @Param('id') id: string,
     ): Promise<Product> {
-        return this.productService.update(id, updateProductDTO);
+        const updatedProduct = this.productService.update(id, updateProductDTO);
+        if (!updatedProduct) {
+            throw new NotFoundException(NOT_FOUND_PRODUCT_ERROR);
+        }
+        return updatedProduct;
     }
 }
