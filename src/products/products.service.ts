@@ -60,7 +60,17 @@ export class ProductsService {
             {
                 $addFields: {
                     reviewCount: {$size: '$review'},
-                    reviewAvg: {$avg: '$review.rating'}
+                    reviewAvg: {$avg: '$review.rating'},
+                    review: {
+                        $function: {
+                            body: `function (review){
+                                review.soft((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                return review;
+                            }`,
+                            args: ['$review'],
+                            lang: 'js'
+                        }
+                    }
                 }
             }
         ]).exec();
