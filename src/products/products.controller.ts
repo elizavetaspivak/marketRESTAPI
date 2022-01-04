@@ -8,7 +8,7 @@ import {
     HttpStatus, NotFoundException,
     Param, Patch,
     Post,
-    Put, UsePipes, ValidationPipe,
+    Put, UseGuards, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import {CreateProductDto} from './DTO/create-product.dto';
 import {UpdateProductDto} from './DTO/update-product.dto';
@@ -17,6 +17,7 @@ import {Product} from './schemas/product.schema';
 import {NOT_FOUND_PRODUCT_ERROR} from "./products.constants";
 import {FindProductDto} from "./DTO/find-product.dto";
 import {IdValidationPipe} from "../pipes/id-validation.pipe";
+import {JwtAuthQuard} from "../auth/quards/jwt.quard";
 
 @Controller('products')
 export class ProductsController {
@@ -29,6 +30,7 @@ export class ProductsController {
         return this.productService.getAll();
     }
 
+    @UseGuards(JwtAuthQuard)
     @Get(':id')
     getOne(@Param('id', IdValidationPipe) id: string): Promise<Product> {
         const product = this.productService.getById(id);
@@ -38,6 +40,7 @@ export class ProductsController {
         return product;
     }
 
+    @UseGuards(JwtAuthQuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @Header('Cache-Control', 'none')
@@ -52,6 +55,7 @@ export class ProductsController {
         return this.productService.findWithReview(findProductDto);
     }
 
+    @UseGuards(JwtAuthQuard)
     @Delete(':id')
     remove(@Param('id', IdValidationPipe) id: string) {
         const deletedProduct = this.productService.remove(id);
@@ -60,6 +64,7 @@ export class ProductsController {
         }
     }
 
+    @UseGuards(JwtAuthQuard)
     @Patch(':id')
     update(
         @Body() updateProductDTO: UpdateProductDto,

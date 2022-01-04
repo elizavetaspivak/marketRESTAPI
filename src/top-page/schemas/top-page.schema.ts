@@ -1,6 +1,6 @@
 import {TopLevelCategory} from "../DTO/create-top-page.dto";
 import {Base, TimeStamps} from "@typegoose/typegoose/lib/defaultClasses";
-import {prop} from "@typegoose/typegoose";
+import {index, prop} from "@typegoose/typegoose";
 
 export class HHData{
     @prop()
@@ -25,6 +25,7 @@ export class TopPageAdvantage{
 }
 
 export interface TopPage extends Base {}
+@index({'$**': 'text'})
 export class TopPage extends TimeStamps{
     @prop({enum: TopLevelCategory})
     firstCategory: TopLevelCategory;

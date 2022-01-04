@@ -8,16 +8,17 @@ import {
     NotFoundException,
     Param,
     Post,
-    Put,
+    Put, UseGuards,
     UsePipes, ValidationPipe
 } from "@nestjs/common";
 import {TopPageService} from "./top-page.service";
 import {TopPage} from "./schemas/top-page.schema";
-import {CreateTopPageDto} from "./DTO/create-top-page.dto";
+import {CreateTopPageDto, TopLevelCategory} from "./DTO/create-top-page.dto";
 import {UpdateTopPageDto} from "./DTO/update-top-page.dto";
 import {FindTopPageDto} from "./DTO/find-top-page.dto";
 import {IdValidationPipe} from "../pipes/id-validation.pipe";
 import {PAGE_NOT_FOUND} from "./top-page.constants";
+import {JwtAuthQuard} from "../auth/quards/jwt.quard";
 
 @Controller('top-page')
 export class TopPageController {
@@ -25,6 +26,7 @@ export class TopPageController {
 
     }
 
+    @UseGuards(JwtAuthQuard)
     @Get(':id')
     async get(@Param('id', IdValidationPipe) id: string): Promise<TopPage> {
         const page = await this.topPageService.getById(id)
@@ -43,6 +45,7 @@ export class TopPageController {
         return page
     }
 
+    @UseGuards(JwtAuthQuard)
     @Post()
     @HttpCode(200)
     @Header('Cache-Control', 'none')
@@ -50,6 +53,7 @@ export class TopPageController {
         return this.topPageService.create(createTopPageDto);
     }
 
+    @UseGuards(JwtAuthQuard)
     @Put(':id')
     @HttpCode(200)
     @Header('Cache-Control', 'none')
@@ -63,6 +67,7 @@ export class TopPageController {
         return updatedPage
     }
 
+    @UseGuards(JwtAuthQuard)
     @Delete(':id')
     async remove(@Param('id') id: string): Promise<TopPage> {
         const deletedPage = await this.topPageService.delete(id)
@@ -75,7 +80,12 @@ export class TopPageController {
     @UsePipes(new ValidationPipe())
     @Post('find')
     @HttpCode(200)
-    find(@Body() findTopPageDto: FindTopPageDto): Promise<Array<TopPage>> {
-        return this.topPageService.findByCategory(findTopPageDto);
+    find(@Body() firstCategory: TopLevelCategory) {
+        return this.topPageService.findByCategory(firstCategory);
+    }
+
+    @Get('textSearch/:text')
+    async textSearch(@Param('text') text: string) {
+        return this.topPageService.findByText(text);
     }
 }
