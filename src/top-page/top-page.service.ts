@@ -17,19 +17,23 @@ export class TopPageService {
     return this.topPageModel.findById(id).exec();
   }
 
+  async findByAlias(alias: string): Promise<TopPage> {
+    return this.topPageModel.findOne({alias}).exec();
+  }
+
   async create(topPageDto: CreateTopPageDto): Promise<TopPage> {
     return this.topPageModel.create(topPageDto);
   }
 
   async update(id: string, updateTopPageDto: UpdateTopPageDto): Promise<TopPage> {
-    return this.topPageModel.findByIdAndUpdate(id, updateTopPageDto, {new: true});
+    return this.topPageModel.findByIdAndUpdate(id, updateTopPageDto, {new: true}).exec();
   }
 
-  async find(findTopPageDto: FindTopPageDto): Promise<Array<TopPage>> {
-    return this.topPageModel.find(findTopPageDto).exec();
+  async findByCategory(findTopPageDto: FindTopPageDto): Promise<Array<TopPage>> {
+    return this.topPageModel.find({findTopPageDto}, {alias: 1, secondCategory: 1, title: 1}).exec();
   }
 
   async delete(id: string): Promise<TopPage> {
-    return this.topPageModel.findByIdAndRemove(id);
+    return this.topPageModel.findByIdAndRemove(id).exec();
   }
 }

@@ -13,6 +13,9 @@ export class UpdateTopPageDto {
     readonly title: string;
 
     @IsString()
+    readonly alias: string;
+
+    @IsString()
     readonly category: string;
 
     @IsOptional()

@@ -38,6 +38,9 @@ export class CreateTopPageDto {
     readonly secondCategory: string;
 
     @IsString()
+    readonly alias: string;
+
+    @IsString()
     readonly title: string;
 
     @IsString()

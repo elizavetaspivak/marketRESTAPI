@@ -32,6 +32,9 @@ export class TopPage extends TimeStamps{
     @prop()
     secondCategory: string;
 
+    @prop({unique: true})
+    alias: string;
+
     @prop()
     title: string;
 
