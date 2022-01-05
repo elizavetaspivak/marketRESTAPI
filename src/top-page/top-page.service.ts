@@ -34,6 +34,10 @@ export class TopPageService {
             }).exec();
     }
 
+    async findAll() {
+        return this.topPageModel.find({}).exec();
+    }
+
     async delete(id: string): Promise<TopPage> {
         return this.topPageModel.findByIdAndRemove(id).exec();
     }

@@ -14,6 +14,7 @@ import {TypegooseModule} from "nestjs-typegoose";
                 collection: 'TopPage'
             }
         }]),
-    ]
+    ],
+    exports: [TopPageService]
 })
 export class TopPageModule {}
