@@ -36,6 +36,7 @@ export class ReviewController {
     @HttpCode(200)
     @Header('Cache-Control', 'none')
     async create(@Body() createReviewDto: CreateReviewDto) {
+        this.notify(createReviewDto);
         return this.reviewService.create(createReviewDto);
     }
 
