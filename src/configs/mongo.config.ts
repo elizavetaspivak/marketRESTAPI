@@ -9,7 +9,7 @@ export const getMongoConfig = async (configService: ConfigService): Promise<Type
 }
 
 const getMongoString = (configService: ConfigService) => {
-    return 'mongodb+srv://' + configService.get('MONGO_LOGIN') + ':' + configService.get('MONGO_PASSWORD') + '@' + 'cluster0.r4c5f.mongodb.net' + '/' + configService.get('myFirstDatabase') + '?retryWrites=true&w=majority'
+    return 'mongodb+srv://elizaveta:elizaveta@cluster0.r4c5f.mongodb.net/?retryWrites=true&w=majority'
 }
 
 const getMongoOptions = () => ({
