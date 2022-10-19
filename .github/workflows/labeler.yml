@@ -1,14 +1,21 @@
-name: "Pull Request Labeler"
-on:
-  - pull_request_target
+name: Create issue on commit
+
+on: [ push ]
 
 jobs:
-  triage:
-    permissions:
-      contents: read
-      pull-requests: write
+  create_issue:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
-      - uses: actions/labeler@v4
-        with:
-          repo-token: "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"
+      - name: Create issue using REST API
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/issues \
+          --header 'authorization: Bearer ${{ secrets.TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "Automated issue for commit: ${{ github.sha }}",
+            "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_."
+            }' \
+          --fail
