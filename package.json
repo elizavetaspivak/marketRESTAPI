@@ -100,7 +100,7 @@
     "testEnvironment": "node"
   },
   "engines": {
-    "node": "16.17.0",
+    "node": "16.18.1",
     "npm": "6.14.13"
   }
 }
